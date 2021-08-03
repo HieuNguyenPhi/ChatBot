@@ -1,5 +1,5 @@
+import json as _json
 import spacy
-import json
 
 import random
 from rasa_nlu.training_data import load_data
@@ -10,7 +10,7 @@ import sqlite3
 import warnings
 warnings.filterwarnings('ignore')
 
-nlp = spacy.load('en')
+nlp = spacy.load("en_core_web_sm")
 
 def train():
     pipeline = 'tensorflow_embedding'
@@ -42,19 +42,16 @@ def response(message):
             pass
 
         if Class == 'account_statement':
-            query = 'SELECT TimeStampt, Type, Amount, Location, Balance FROM Bank ORDER BY TimeStampt DESC LIMIT 5'
+            query = 'SELECT TimeStamp, Type, Amount, Location, Balance FROM Bank ORDER BY TimeStamp DESC LIMIT 5'
             cursor.execute(query)
             results = cursor.fetchall()
             balance = results[0][4]
             print("Bot: Your current account balance is USD {}".format(balance))
             print("Bot: Here is your latest 5 transactions:")
-            print("Date", "Type", "Amount", "Location", "Balance", sep="\t")
+            print("{:<20s}\t{:<10s}\t{:<10s}\t{:<10s}\t{:<10s}".format("Date", "Type", "Amount", "Location", "Balance"))
             for i in range(len(results)):
-                # lsts = [results[i][0],results[i][1],results[i][2],results[i][3],results[i][4]]
-                # lsts = '\t'.join(str(lst) for lst in lsts) 
-                # print(lst)
-                print("{:<15s}\t{:<10s}\t{:<10s}\t{:<5s}\t{:<10s}".format(results[i][0],results[i][1],results[i][2],results[i][3],results[i][4]))
-        
+                print("{:<20s}\t{:<10s}\t{:<10s}\t{:<10s}\t{:<10s}".format(str(results[i][0]),str(results[i][1]),str(results[i][2]),str(results[i][3]),str(results[i][4])))
+
         if Class == 'greet':
             response = ["Hello!", "Good to see you again!", "Hi there!"]
             print("Bot: " + random.choice(response))
@@ -81,19 +78,16 @@ def response(message):
                 print('Bot: ' + random.choice(response).format(list(*results)[0]))
             
             elif Class == 'statement':
-                query = 'SELECT TimeStampt, Type, Amount, Location, Balance FROM Bank ORDER BY TimeStampt DESC LIMIT 5'
+                query = 'SELECT TimeStamp, Type, Amount, Location, Balance FROM Bank ORDER BY TimeStamp DESC LIMIT 5'
                 cursor.execute(query)
                 results = cursor.fetchall()
                 balance = results[0][4]
                 print("Bot: Your current account balance is USD {}".format(balance))
                 print("Bot: Here is your latest 5 transactions:")
-                print("Date", "Type", "Amount", "Location", "Balance", sep="\t")
+                print("{:<20s}\t{:<10s}\t{:<10s}\t{:<10s}\t{:<10s}".format("Date", "Type", "Amount", "Location", "Balance"))
                 for i in range(len(results)):
-                    # lsts = [results[i][0],results[i][1],results[i][2],results[i][3],results[i][4]]
-                    # lsts = '\t'.join(str(lst) for lst in lsts) 
-                    # print(lst)
-                    print("{:<15s}\t{:<10s}\t{:<10s}\t{:<5s}\t{:<10s}".format(results[i][0],results[i][1],results[i][2],results[i][3],results[i][4]))
-            
+                    print("{:<20s}\t{:<10s}\t{:<10s}\t{:<10s}\t{:<10s}".format(str(results[i][0]),str(results[i][1]),str(results[i][2]),str(results[i][3]),str(results[i][4])))
+       
             elif Class == 'greet':
                 response = ["Hello!", "Good to see you again!", "Hi there!"]
                 print("Bot: " + random.choice(response))
@@ -111,8 +105,12 @@ def response(message):
                 print("Bot: Sorry, "+ random.choice(response))
 
 while True:
-    message = unicode("User: " + str(raw_input()), "utf-8")
-    if message in [unicode("User: Thank you", "utf-8"), unicode("User: Thanks", "utf-8"), unicode("User: thank you", "utf-8"), unicode("User: thanks", "utf-8")]:
+    message = "User: " + str(input())
+    if message in ["User: Thank you", "User: Thanks", "User: thank you","User: thanks"]:
         print("Bot: Welcome! I am here to help you any time")
         break
     response(message)
+    
+    
+    
+    
